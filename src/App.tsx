@@ -117,7 +117,7 @@ function App() {
 
   useEffect(() => {
     if (initialData.error) return
-  
+
     try {
       localStorage.setItem('job-applications', JSON.stringify(applications))
     } catch {
@@ -158,13 +158,13 @@ function App() {
         previous.map((application) =>
           application.id === editingId
             ? {
-                ...application,
-                company: trimmedCompany,
-                role: trimmedRole,
-                appliedDate,
-                notes: notes.trim(),
-                jobUrl: trimmedUrl,
-              }
+              ...application,
+              company: trimmedCompany,
+              role: trimmedRole,
+              appliedDate,
+              notes: notes.trim(),
+              jobUrl: trimmedUrl,
+            }
             : application
         )
       )
@@ -268,6 +268,13 @@ function App() {
     }
   }
 
+  const statusCounts = {
+    Applied: applications.filter((app) => app.status === 'Applied').length,
+    Interviewing: applications.filter((app) => app.status === 'Interviewing').length,
+    Offer: applications.filter((app) => app.status === 'Offer').length,
+    Rejected: applications.filter((app) => app.status === 'Rejected').length,
+  }
+
   const filteredApplications = applications.filter((application) => {
     const query = search.trim().toLowerCase()
 
@@ -285,7 +292,14 @@ function App() {
     <main>
       <h1>Job Application Tracker</h1>
       <p>Keep track of your applications and their progress.</p>
-
+      <section className="stats" aria-label="Application summary">
+        {Object.entries(statusCounts).map(([status, count]) => (
+          <div className="stat-card" key={status}>
+            <strong>{count}</strong>
+            <span>{status}</span>
+          </div>
+        ))}
+      </section>
       {initialData.error && <p role="alert">{initialData.error}</p>}
       <p role="status">{message}</p>
 
